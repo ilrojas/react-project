@@ -1,0 +1,122 @@
+body{
+  justify-content: center;
+} 
+ 
+ #root {
+  /*max-width: 1280px;*/
+  width: 1400px;
+  margin: 30px 50px;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  
+}
+
+
+.read-the-docs {
+  color: #888;
+}
+
+.nav ul{
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  
+  li{
+    padding: 5px;
+    border: solid 1px #fff;
+    border-radius: 15%;
+    margin-right: 15px;
+  }
+  li:hover{
+    backdrop-filter: blur(10px);
+  }
+  
+}
+
+.loader {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(179, 227, 255, 0.907);
+}
+
+.loader::before {
+  content: ' ';
+  width: 50px; /* Ajusté el tamaño del círculo */
+  height: 50px; /* Ajusté el tamaño del círculo */
+  border-radius: 50%;
+  border: 5px solid transparent; /* Borde amarillo */
+  border-bottom: 5px solid #c0f3ff; 
+  border-top: 5px solid #96e0ff; /* Borde superior rojo para un efecto de animación */
+  animation: spin 0.6s linear infinite; /* Animación de rotación */
+  backdrop-filter: blur(50px); 
+  background-color: rgba(255, 245, 154, 0.141); 
+}
+
+/* Definir la animación */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+table{
+  img{
+    border-radius: 50%;
+  }
+  tbody tr:hover{
+    backdrop-filter: blur(50px); 
+  background-color: rgba(74, 74, 74, 0.165); 
+  }
+}
+
+.headerT, .nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  
+  margin-bottom: 10px;
+  button{
+    margin-right: 5px;
+  }
+  input{
+    margin-left: 20px;
+  }
+}
+
+.headerB{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  span{
+    margin-right: 15px;
+  }
+}
+
+.filter{
+  display: flex;
+  flex-direction: row;
+}
+
+.badge{
+  color: #fff;
+  background-color: rgb(0, 98, 174);
+  border-radius: 50%;
+  align-items: center;
+  display: flex;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
