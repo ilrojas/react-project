@@ -3,29 +3,34 @@ import './App.css'
 import { ListFunctions } from './components/ListFunctions'
 import { UserCard } from './components/UserCard'
 import { Home } from './components/Home'
+import { TodoApp } from './components/TodoApp'
+import { PiWarningCircleDuotone, PiAppWindowThin, PiHouseSimpleThin, PiIdentificationBadgeThin, PiListBulletsThin, PiUserCheckDuotone,PiSortDescendingLight } from 'react-icons/pi'
+import { MdOutlineDeleteSweep } from "react-icons/md";
+import {User} from './types'
 
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 
 
 
 function App() {
-	
 
-	 /* const [data,setData] = useState(null)
+	 const [data,setData] = useState<User[]>([])
 	 const [error, setError] = useState(null)
-	 const [loading, setLoading] = useState(false)
-	 const [orderedByCountry, setOrderedByCountry] = useState(false)
+	 const [loading, setLoading] = useState(true)
+	 const original = useRef<User[]>([])
 
-	
 	 useEffect(() => {  
-		const abortController = new AbortController(); 
-	  
-		fetch('https://randomuser.me/api?results=50', { signal: abortController.signal }) // Pasar la señal al fetch
-		  .then((response) => response.json())
-		  .then((data) => setData(data.results))
-		  .catch((error) => {
+		const abortController = new AbortController();
+		setLoading(true) 	  
+		fetch('https://randomuser.me/api?results=50', { signal: abortController.signal }) // Pasar la señal al fetch		
+		.then((response) => response.json())
+		.then((data) => {
+			setData(data.results)
+			original.current= data.results
+		})
+		.catch((error) => {
 			if (error.name !== 'AbortError') { // Ignorar el error si es causado por el abort
 			  setError(error);
 			}
@@ -34,12 +39,15 @@ function App() {
 	  
 		return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
 	  }, []);
+	  console.log({data,error,loading})
 	  
+	
+	const [orderedByCountry, setOrderedByCountry] = useState(false)
 	
 	const sortByCountry=()=>{
 		setOrderedByCountry(prevState=> !prevState)
 	}
-
+	
 	const sortedUsers = orderedByCountry
 	?[...data].sort((a,b)=>{
 		return a.location.country.localeCompare(b.location.country)
@@ -49,68 +57,104 @@ function App() {
 	const deletedUsers = (index:string)=>{
 		const filters = data.filter((user)=>user.login.uuid !== index)
 		setData(filters)
-	} */
-  return (
-    <BrowserRouter>
-      <header>
-        <h1>Learning React</h1>
-        <nav className='nav'>
-			<ul>
-				<li>
-					<Link to='/'>Home</Link>
-				</li>
-				<li>
-					<Link to='/list-functions'>List Functions</Link>
-				</li>
-				<li>
-					<Link to='/todo-app'>Todo App</Link>
-				</li>
-				<li>
-					<Link to='/user-card'>User card</Link>
-				</li>
-			</ul>
-		</nav>  
-      </header>
-      <div className='content'>
-        <Routes>         
-          <Route path='/' element={<Home/>}/>
-          <Route 
-			path='/list-functions'
-			element={
-				<>
-					<h1>List of users</h1>
-					{/* <header className='headerT'>
-						<div className='filter'>
-							<span>Filter </span><input type='text'></input>
-						</div>
-						<div>																
-							<button onClick={sortByCountry}>{orderedByCountry?'Unsort':'Sort'}</button>
-							<button onClick={()=>{}}>Restore Deleted Users</button>          
-						</div>        
-					</header>
-					<div className="headerB">
-						 <span>Total users: </span><span className='badge'>{data.length}</span> 
-					</div>
-					{loading && <div className='loader'><h2>Loading...</h2></div>}
-					{error && <span>{}</span>}
-					{!loading && <ListFunctions deletedUsers={deletedUsers} users={data}/>} */}
-				</>											
-				}
-			/>
-          <Route path='/todo-app'/>
-          <Route path='/user-card' element={<UserCard/>}/>
-        </Routes>
-        
-      </div>
-						
-      <footer>
-        <p className="read-the-docs">
-          All content is only of learning purpose
-        </p>
-      </footer>
-      
-    </BrowserRouter>
-  )
+	}
+
+	const inputFilter = (e) => {
+		const valueInput =e.target.value.toLowerCase();
+		if(valueInput){			
+			const dataFilter = original.current.filter((user)=>{return user.name.first.toLowerCase().includes(valueInput) || user.name.last.toLowerCase().includes(valueInput)})
+			setData(dataFilter)			
+		}
+		else{
+			setData(original.current)
+		}
+			
+		
+	}
+	return (
+		<BrowserRouter>
+		<header>  
+			<div className='iconMe'>
+				<PiUserCheckDuotone/>
+			</div>      
+			<nav className='nav'>
+				<ul>
+					<li>
+						<Link className='itemsLinks' to='/'>
+						<PiHouseSimpleThin/>
+						<span>Home</span>
+						</Link>					
+					</li>
+					<li>
+						<Link className='itemsLinks' to='/list-functions'>
+						<PiListBulletsThin/>
+						<span>List Functions</span>
+						</Link>					
+					</li>
+					<li>
+						<Link className='itemsLinks' to='/todo-app'>
+						<PiAppWindowThin/>
+						<span>Todo App</span>
+						</Link>				
+					</li>
+					<li>
+						<Link className='itemsLinks' to='/user-card'>
+						<PiIdentificationBadgeThin/>
+						<span>User card</span>
+						</Link>					
+					</li>
+				</ul>
+			</nav>  
+		</header>
+		<div className='content'>
+			<div>
+				<h1>Learning React</h1>
+			</div>
+			<div>
+				<Routes>         
+				<Route path='/' element={<Home/>}/>
+				<Route 
+					path='/list-functions'
+					element={
+						<>
+							<h1>List of users</h1>
+							<div className='headerT'>
+								<div className='filter'>
+									<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filtrar por nombre..."></input>
+								</div>
+								<div>																
+									<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
+									<button onClick={()=>{}}>Restore Deleted Users</button>        
+								</div>        
+							</div>
+							<div className="headerB">
+								<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
+							</div>
+							
+							{loading && <div className='loader'><h2>Loading...</h2></div>}
+							{error && <span>{}</span>}
+							{!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>}
+							{sortedUsers.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+						</>											
+						}
+					/>
+				<Route path='/todo-app' element={<TodoApp/>}/>
+				<Route path='/user-card' element={<UserCard/>}/>
+				</Routes>
+			</div>
+		
+			
+			
+		</div>
+							
+		<footer>
+			<p className="read-the-docs">
+			All content is only of learning purpose
+			</p>
+		</footer>
+		
+		</BrowserRouter>
+	)
 }
 
 export default App
