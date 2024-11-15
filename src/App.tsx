@@ -7,6 +7,7 @@ import { TodoApp } from './components/TodoApp'
 import { PiWarningCircleDuotone, PiAppWindowThin, PiHouseSimpleThin, PiIdentificationBadgeThin, PiListBulletsThin, PiUserCheckDuotone,PiSortDescendingLight } from 'react-icons/pi'
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import {User} from './types'
+import { ItemNav } from './components/ItemNav'
 
 
 import { useState, useEffect, useRef } from 'react'
@@ -39,7 +40,9 @@ function App() {
 	  
 		return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
 	  }, []);
-	  console.log({data,error,loading})
+	  //console.log({data,error,loading})
+
+	  
 	  
 	
 	const [orderedByCountry, setOrderedByCountry] = useState(false)
@@ -79,30 +82,10 @@ function App() {
 			</div>      
 			<nav className='nav'>
 				<ul>
-					<li>
-						<Link className='itemsLinks' to='/'>
-						<PiHouseSimpleThin/>
-						<span>Home</span>
-						</Link>					
-					</li>
-					<li>
-						<Link className='itemsLinks' to='/list-functions'>
-						<PiListBulletsThin/>
-						<span>List Functions</span>
-						</Link>					
-					</li>
-					<li>
-						<Link className='itemsLinks' to='/todo-app'>
-						<PiAppWindowThin/>
-						<span>Todo App</span>
-						</Link>				
-					</li>
-					<li>
-						<Link className='itemsLinks' to='/user-card'>
-						<PiIdentificationBadgeThin/>
-						<span>User card</span>
-						</Link>					
-					</li>
+					<ItemNav title="HOME" path='/' reactIcon={PiHouseSimpleThin}/>
+					<ItemNav title="TABLE LIST" path='/table-list' reactIcon={PiListBulletsThin}/>
+					<ItemNav title="TODO APP" path='/todo-app' reactIcon={PiAppWindowThin}/>
+					<ItemNav title="USER CARD" path='/user-card' reactIcon={PiIdentificationBadgeThin}/>					
 				</ul>
 			</nav>  
 		</header>
@@ -114,13 +97,13 @@ function App() {
 				<Routes>         
 				<Route path='/' element={<Home/>}/>
 				<Route 
-					path='/list-functions'
+					path='/table-list'
 					element={
 						<>
 							<h1>List of users</h1>
 							<div className='headerT'>
 								<div className='filter'>
-									<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filtrar por nombre..."></input>
+									<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
 								</div>
 								<div>																
 									<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>

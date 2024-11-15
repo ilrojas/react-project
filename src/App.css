@@ -63,15 +63,20 @@ header{
     padding: 0.5rem 1rem;
     font-weight: bold;
     position: relative; /* Necesario para posicionar el ::after */
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
     span{
-      font-size: x-large;
+      font-size: large;
+    }
+  }
+  @media screen and (max-width: 764px){
+    li .itemsLinks span{
+      display: none;
     }
   }
   li .itemsLinks:hover{  
     cursor: pointer;
-    color: #a5d6ff; /* Cambia el color en hover */
-    /*transform: scale(1.1);*/
+    filter: drop-shadow(0px 0px 15px rgba(10, 99, 201, 0.981));
+    transform: scale(1.1);
   }
 
   li .itemsLinks::after {
@@ -89,6 +94,7 @@ header{
   li .itemsLinks:hover::after {
       width: 100%; /* Expande la línea en hover */
       left: 50%; /* Mueve la línea hacia la izquierda para cubrir todo el ancho */
+      filter: drop-shadow(0px 0px 5px rgba(10, 99, 201, 0.716));
   }
 
   
