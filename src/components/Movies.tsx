@@ -2,6 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from "react"
 import type { Movie } from "../types"
+import type { Genres } from '../types';
 import {PiWarningCircleDuotone} from 'react-icons/pi' 
 
 
@@ -59,7 +60,7 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     const URL_POSTER = 'https://image.tmdb.org/t/p'
     
     
-    const [genres, setGenres] = useState([]);
+    const [genres, setGenres] = useState<Genres[]>([]);
     const [data,setData] = useState<Movie[]>([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -79,7 +80,7 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
             try {
                 // Realizamos ambas solicitudes en paralelo
                 const [moviesResponse, genresResponse] = await Promise.all([
-                    fetch(`${URL}/movie/popular?api_key=${API_KEY}&language=es-ES`, { signal: abortController.signal })
+                    fetch(`${URL}/discover/movie?api_key=${API_KEY}&language=es-ES&sort_by=popularity.desc&page=${page}`, { signal: abortController.signal })
                         .then((res) => res.json()),
                     fetch(`${URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`, { signal: abortController.signal })
                         .then((res) => res.json())
@@ -107,6 +108,15 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
   return (
     <>
         <h1>Movies</h1>
+        <div className='gendersContainer'>
+            {genres && genres.map((gender) => {
+                return(
+                    <span key={gender.id} className='badgeGender'>{gender.name}</span>
+                )
+            })
+                
+            }
+        </div>
         <div className='headerT'>
             <button onClick={handlePrevPage}><IconLeft/></button>
             <button onClick={handleNextPage}><IconRight/></button>

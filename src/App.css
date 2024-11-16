@@ -191,9 +191,23 @@ table{
   justify-content: center;
   font-weight: bold;
 }
+
+.gendersContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  .badgeGender{
+    border: solid 1px #888;
+    border-radius: 5px;
+    padding: 0px 2px;
+  }
+}
 .badgeMovie{
   
 }
+
+
 
 svg{
   height: 24px;
