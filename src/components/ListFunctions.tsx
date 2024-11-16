@@ -31,7 +31,7 @@ export const ListFunctions = ({deletedUsers,users}:Props) => {
                                     <td>
                                         <img src={user.picture.thumbnail}></img>
                                     </td>
-                                    <td className={user.name.title == 'Mr'?'badge-mr':'badge-miss'}>{user.name.title}</td>
+                                    <td >{user.name.title}</td>
                                     <td>{user.name.first+' '+user.name.last}</td>  
                                     <td>{user.email}</td>
                                     <td>{user.location.country}</td>

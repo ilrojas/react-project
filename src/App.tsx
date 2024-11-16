@@ -4,7 +4,9 @@ import { ListFunctions } from './components/ListFunctions'
 import { UserCard } from './components/UserCard'
 import { Home } from './components/Home'
 import { TodoApp } from './components/TodoApp'
-import { PiWarningCircleDuotone, PiAppWindowThin, PiHouseSimpleThin, PiIdentificationBadgeThin, PiListBulletsThin, PiUserCheckDuotone,PiSortDescendingLight } from 'react-icons/pi'
+import { Weather } from './components/Weather'
+import { Movies } from './components/Movies'
+import {PiFilmReelDuotone, PiCloudMoon, PiWarningCircleDuotone, PiAppWindowThin, PiHouseSimpleThin, PiIdentificationBadgeThin, PiListBulletsThin, PiUserCheckDuotone,PiSortDescendingLight, PiArrowRightBold, PiArrowLeftBold } from 'react-icons/pi'
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import {User} from './types'
 import { ItemNav } from './components/ItemNav'
@@ -85,7 +87,9 @@ function App() {
 					<ItemNav title="HOME" path='/' reactIcon={PiHouseSimpleThin}/>
 					<ItemNav title="TABLE LIST" path='/table-list' reactIcon={PiListBulletsThin}/>
 					<ItemNav title="TODO APP" path='/todo-app' reactIcon={PiAppWindowThin}/>
-					<ItemNav title="USER CARD" path='/user-card' reactIcon={PiIdentificationBadgeThin}/>					
+					<ItemNav title="USER CARD" path='/user-card' reactIcon={PiIdentificationBadgeThin}/>
+					<ItemNav title="WEATHER" path='/weather' reactIcon={PiCloudMoon}/>
+					<ItemNav title="MOVIES" path='/movies' reactIcon={PiFilmReelDuotone}/>						
 				</ul>
 			</nav>  
 		</header>
@@ -95,34 +99,36 @@ function App() {
 			</div>
 			<div>
 				<Routes>         
-				<Route path='/' element={<Home/>}/>
-				<Route 
-					path='/table-list'
-					element={
-						<>
-							<h1>List of users</h1>
-							<div className='headerT'>
-								<div className='filter'>
-									<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
+					<Route path='/' element={<Home/>}/>
+					<Route 
+						path='/table-list'
+						element={
+							<>
+								<h1>List of users</h1>
+								<div className='headerT'>
+									<div className='filter'>
+										<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
+									</div>
+									<div>																
+										<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
+										<button onClick={()=>{}}>Restore Deleted Users</button>        
+									</div>        
 								</div>
-								<div>																
-									<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
-									<button onClick={()=>{}}>Restore Deleted Users</button>        
-								</div>        
-							</div>
-							<div className="headerB">
-								<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
-							</div>
-							
-							{loading && <div className='loader'><h2>Loading...</h2></div>}
-							{error && <span>{}</span>}
-							{!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>}
-							{sortedUsers.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
-						</>											
-						}
-					/>
-				<Route path='/todo-app' element={<TodoApp/>}/>
-				<Route path='/user-card' element={<UserCard/>}/>
+								<div className="headerB">
+									<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
+								</div>
+								
+								{loading && <div className='loader'><h2>Loading...</h2></div>}
+								{error && <span>{}</span>}
+								{!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>}
+								{sortedUsers.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+							</>											
+							}
+						/>
+					<Route path='/todo-app' element={<TodoApp/>}/>
+					<Route path='/user-card' element={<UserCard/>}/>
+					<Route path='/weather' element={<Weather/>}/>
+					<Route path='/movies' element={<Movies iconLeft={PiArrowLeftBold} iconRight={PiArrowRightBold}/>}/>
 				</Routes>
 			</div>
 		
