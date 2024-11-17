@@ -110,7 +110,8 @@ header{
   left: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start ;
+  flex-wrap: wrap;
   color: rgba(179, 227, 255, 0.479);
   font-size: 30px;
 }

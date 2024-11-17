@@ -110,9 +110,7 @@ function App() {
 										<div className='headerT'>
 											<div className='filterInput'>
 												<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
-											</div>
-
-											
+											</div>										
 
 											<div>																
 												<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>

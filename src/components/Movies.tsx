@@ -79,16 +79,13 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
             setLoading(true);
             try {
                 // Realizamos ambas solicitudes en paralelo
-                const [moviesResponse, genresResponse] = await Promise.all([
+                const [moviesResponse] = await Promise.all([
                     fetch(`${URL}/discover/movie?api_key=${API_KEY}&language=es-ES&sort_by=popularity.desc&page=${page}`, { signal: abortController.signal })
-                        .then((res) => res.json()),
-                    fetch(`${URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`, { signal: abortController.signal })
                         .then((res) => res.json())
                 ]);
     
                 // Actualizamos el estado con los resultados
                 setData(moviesResponse.results || []);
-                setGenres(genresResponse.genres || []);
             } catch (error) {
                 if (error.name !== 'AbortError') { // Ignorar errores causados por el aborto de la solicitud
                     setError(error.message);
@@ -102,8 +99,34 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     
         return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
     }, [page]);
-    console.log(data)
-    console.log(genres)
+    useEffect(() => {  
+        const abortController = new AbortController();
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                // Realizamos ambas solicitudes en paralelo
+                const [genresResponse] = await Promise.all([                    
+                    fetch(`${URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`, { signal: abortController.signal })
+                        .then((res) => res.json())
+                ]);
+    
+                // Actualizamos el estado con los resultados
+                setGenres(genresResponse.genres || []);
+            } catch (error) {
+                if (error.name !== 'AbortError') { // Ignorar errores causados por el aborto de la solicitud
+                    setError(error.message);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchData();
+    
+        return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
+    }, []);
+    //console.log(data)
+    //console.log(genres)
 
     function getRandomColor() {
         return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
@@ -144,7 +167,7 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                     <section className="moviesContainer">
                         {data && data.map((movie) => {
                             return (
-                                <div className='cardMovie'>
+                                <div className='cardMovie' key={movie.id}>
                                 <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster_path}`} alt={movie.title} key={movie.id} />
                                 <h2 className='movieTitle'>{movie.original_title}</h2>
                                 <span>{movie.release_date}</span>

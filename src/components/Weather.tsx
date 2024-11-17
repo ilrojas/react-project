@@ -1,5 +1,9 @@
 
 import { useState, useEffect } from "react"
+import { WeatherInput } from "./WeatherInput"
+import type { WeatherResults, WeatherError } from "../types" 
+import {PiWarningCircleDuotone} from 'react-icons/pi' 
+
 /*Forecast API
 Forecast weather API method returns, depending upon your price plan level, upto next 14 day weather forecast and weather alert as json or xml. The data is returned as a Forecast Object.
 
@@ -133,39 +137,75 @@ diff_rad	decimal	Diffuse Horizontal Irradiation (DHI) W/m²
 air_quality	element	See aqi element*/
 
 export const Weather = () => {
-    const API_KEY = 'b59bc03c02784ce1837231527241511'
-    const URL = 'http://api.weatherapi.com/v1'
-    const country = 'london'
-    //const country= document.querySelector('#country_weather')
+    const API_KEY = import.meta.env.VITE_API_KEY_WEATHER
+    const URL = import.meta.env.VITE_API_URL_WEATHER
+	//console.log({API_KEY,URL})
+    
 
-    const [data,setData] = useState(null)
-	 const [error, setError] = useState(null)
+    const [data,setData] = useState<WeatherResults>(null)
+	 const [error, setError] = useState<WeatherError>(null)
 	 const [loading, setLoading] = useState(true)
+	 const [newcity, setNewCity] = useState('london')
 	 
-
-     useEffect(() => {  
-		const abortController = new AbortController();
-		setLoading(true) 	  
-		fetch(`${URL}/forecast.json?key=${API_KEY}&q=${country}&days=7&aqi=no&alerts=no`, { signal: abortController.signal }) // Pasar la señal al fetch		
-		.then((response) => response.json())
-		.then((data) => {
-			setData(data)
-		})
-		.catch((error) => {
-			if (error.name !== 'AbortError') { // Ignorar el error si es causado por el abort
-			  setError(error);
-			}
-		  })
-		  .finally(() => setLoading(false));
-	  
-		return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
-	  }, []);
-    console.log(data)
+	//const LoadData = (city = 'London') => {
+		useEffect(() => {  
+			const abortController = new AbortController();
+			setLoading(true)
+			fetch(`http://api.weatherapi.com/v1/forecast.json?key=b59bc03c02784ce1837231527241511&q=${newcity}&days=7&aqi=no&alerts=no`, { signal: abortController.signal }) // Pasar la señal al fetch		
+			//fetch(`http://api.weatherapi.com/v1/forecast.json?days=7&aqi=no&alerts=no&key=b59bc03c02784ce1837231527241511&q=${newcity}`, { signal: abortController.signal })
+			.then((response) => response.json())
+			.then((data) => {
+				setData(data)
+			})
+			.catch((error) => {
+				
+				  setError(error);
+				
+			  })
+			  .finally(() => setLoading(false));
+		  
+			//return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
+		  }, [newcity]);
+		  console.log(data)
+	//}
+	
+	 const changeCountry = (city:string) =>{
+		setData(null)
+		setNewCity(city)
+		//LoadData(city)
+	}
+     
+    
   return (
     <>
-    <h1>Weather</h1>
-    <a href="https://www.weatherapi.com/" title="Free Weather API"><img src='https://cdn.weatherapi.com/v4/images/weatherapi_logo.png' alt="Weather data by WeatherAPI.com" border="0"/></a>
-    <input type="text" id="country_weather"/>
+    	<h1>Weather</h1>
+		{data == null && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+		{loading && <div className='loader'><h2>Loading...</h2></div>}
+		{error && <span>{error.error.message}</span>}
+		{data != null  && 
+		<>
+			<div className='headerT'>
+				<div className='filterInput'>
+					<WeatherInput changeCountry={changeCountry}/>
+				</div>								        
+			</div>
+			
+			<div>{data?.location.name}</div>
+			<div>{data?.location.country}</div>
+			<div>{data?.location.localtime.split(' ')[1]}</div>
+			
+			<div>
+				<div><img src={`http:${data?.current.condition.icon}`} width='128px' alt={`${data?.current.condition.text}`} /> </div>
+			</div>
+			<div>
+				<div><span>{data?.current.condition.text}</span></div>
+				<div>{data?.current.temp_c}°</div>
+			</div>
+		</>
+		}
+		
+	
+	
     </>
   )
 }
