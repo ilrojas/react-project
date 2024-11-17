@@ -1,6 +1,9 @@
 body{
   justify-content: center;
   overflow: inherit ;
+  background-color: rgba(14, 22, 38, 1);
+  position: relative; /* Hace que el contenedor sea el contexto de .headerMovies */
+  padding-top: 100px; /* Compensa la altura de .headerMovies */
 } 
  
  #root {
@@ -33,13 +36,7 @@ header{
       padding-left: 30px;
       align-content: center;
     }
-  }
-
-
-
-  .content{
-    padding-top: 25px;
-  }
+  }  
 
 .read-the-docs {
   color: #888;
@@ -103,26 +100,33 @@ header{
 }
 
 .loader {
-  position: relative;
-  width: 360px;
-  height: 360px;
+  position: absolute;
+  z-index: 100;
+  background-color: #000000d2;
+  backdrop-filter: blur(5px);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgba(179, 227, 255, 0.907);
+  color: rgba(179, 227, 255, 0.479);
+  font-size: 30px;
 }
 
 .loader::before {
   content: ' ';
-  width: 50px; /* Ajusté el tamaño del círculo */
-  height: 50px; /* Ajusté el tamaño del círculo */
+  width: 70px; /* Ajusté el tamaño del círculo */
+  height: 70px; /* Ajusté el tamaño del círculo */
   border-radius: 50%;
   border: 5px solid transparent; /* Borde amarillo */
   border-bottom: 5px solid #c0f3ff; 
   border-top: 5px solid #96e0ff; /* Borde superior rojo para un efecto de animación */
   animation: spin 0.6s linear infinite; /* Animación de rotación */
   backdrop-filter: blur(50px); 
-  background-color: rgba(255, 245, 154, 0.141); 
+  background-color: rgba(255, 245, 154, 0.141);
+  
 }
 
 /* Definir la animación */
@@ -146,12 +150,19 @@ table{
   }
 }
 
+.content{
+  
+}
+
 .headerT, .nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding: 15px;
   
-  margin-bottom: 10px;
+  
+  
+  
   button{
     margin-right: 5px;
   }
@@ -174,7 +185,99 @@ table{
   }
 }
 
-.filter{
+.headerMovies {
+  background-color: #145e68d9;
+  position: absolute;
+  width: 100vmax;
+  left: 0;
+  z-index: 10;
+  /* margin-bottom: 280px; */
+}
+
+.headerMovies .filterInput{
+  margin-left: 25px;
+  width: 100%;
+}
+
+.headerMovies .filterInput input {
+  width: 65%;
+  background-color: #96e0ff;
+}
+
+.headerMovies .filterInput span {
+  color: #ffffff;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.gendersContainer{
+  grid-area: gendersContainer;
+ 
+  padding: 10px; /* Margen interno */
+  position: relative;
+  padding-bottom: 20px;
+  padding-top: 230px;
+
+  
+    display: grid;
+    grid-template-columns: repeat(3,auto);
+    grid-template-rows: repeat(10,30px);
+  
+}
+.gendersContainer span{
+  transition: transform 0.6s ease-in-out;
+}
+.gendersContainer span:hover{
+  transform: scale(1.1);
+  font-weight: bold;
+}
+
+.gridMovies {
+  padding-top: 200px;
+  position: relative;
+  display: grid;
+  grid-template-areas: 
+    "gendersContainer moviesSection";
+  grid-template-columns: 1fr 3fr; /* La primera columna ocupa menos espacio */
+  gap: 20px; /* Espaciado entre columnas (opcional) */
+  width: 100%; /* Ajusta al ancho completo */
+}
+
+.moviesSection {
+  grid-area: moviesSection;
+  
+  padding: 10px; /* Margen interno */
+}
+
+/* Para pantallas medianas */
+@media (max-width: 768px) {
+  .gridMovies {
+    grid-template-areas: 
+      "gendersContainer"
+      "moviesSection"; /* Cambia a diseño en una columna */
+    grid-template-columns: 1fr; /* Una sola columna */
+  }
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 480px) {
+  .headerMovies {
+    height: auto; /* Ajusta automáticamente su altura */
+    padding: 20px; /* Espaciado interno para pantallas pequeñas */
+    text-align: center; /* Centra el contenido */
+  }
+
+  .gridMovies {
+    grid-template-areas: 
+      "gendersContainer"
+      "moviesSection"; /* Diseño en columna única */
+    grid-template-columns: 1fr; /* Una sola columna */
+    gap: 10px; /* Reduce el espacio entre secciones */
+  }
+
+}
+
+.filterInput{
   display: flex;
   flex-direction: row;
 }
@@ -192,20 +295,7 @@ table{
   font-weight: bold;
 }
 
-.gendersContainer{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-bottom: 20px;
-  .badgeGender{
-    border: solid 1px #888;
-    border-radius: 5px;
-    padding: 0px 2px;
-  }
-}
-.badgeMovie{
-  
-}
+
 
 
 
@@ -239,5 +329,5 @@ svg{
 }
 
 .cardMovie:hover{
-  filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.716));
+  filter: drop-shadow(0px 0px 15px rgba(0, 60, 85, 0.716));
 }

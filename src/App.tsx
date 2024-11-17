@@ -94,9 +94,7 @@ function App() {
 			</nav>  
 		</header>
 		<div className='content'>
-			<div>
-				<h1>Learning React</h1>
-			</div>
+			
 			<div>
 				<Routes>         
 					<Route path='/' element={<Home/>}/>
@@ -105,23 +103,32 @@ function App() {
 						element={
 							<>
 								<h1>List of users</h1>
-								<div className='headerT'>
-									<div className='filter'>
-										<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
-									</div>
-									<div>																
-										<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
-										<button onClick={()=>{}}>Restore Deleted Users</button>        
-									</div>        
-								</div>
-								<div className="headerB">
-									<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
-								</div>
-								
 								{loading && <div className='loader'><h2>Loading...</h2></div>}
-								{error && <span>{}</span>}
-								{!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>}
 								{sortedUsers.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+								{sortedUsers.length > 0 &&
+									<>
+										<div className='headerT'>
+											<div className='filterInput'>
+												<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
+											</div>
+
+											
+
+											<div>																
+												<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
+												<button onClick={()=>{}}>Restore Deleted Users</button>        
+											</div>        
+										</div>
+										<div className="headerB">
+											<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
+										</div>
+										
+										
+										{error && <span>{}</span>}
+										{!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>}
+									</>
+								}
+								
 							</>											
 							}
 						/>

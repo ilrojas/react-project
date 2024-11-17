@@ -105,38 +105,61 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     console.log(data)
     console.log(genres)
 
+    function getRandomColor() {
+        return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+      }
   return (
     <>
-        <h1>Movies</h1>
-        <div className='gendersContainer'>
-            {genres && genres.map((gender) => {
-                return(
-                    <span key={gender.id} className='badgeGender'>{gender.name}</span>
-                )
-            })
-                
-            }
-        </div>
-        <div className='headerT'>
-            <button onClick={handlePrevPage}><IconLeft/></button>
-            <button onClick={handleNextPage}><IconRight/></button>
-        </div>
-        <div className="headerB">
-			<span>Page: </span><span className='badge badgeMovie'>{page}</span> 
-		</div>
-        <section className="moviesContainer">
-            {data && data.map((movie) => {
-                return (
-                    <div className='cardMovie'>
-                    <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster_path}`} alt={movie.title} key={movie.id} />
-                    <h2 className='movieTitle'>{movie.original_title}</h2>
-                    <span>{movie.release_date}</span>
-                    </div>
-                )
-            })}
-        </section>
         
         {data.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+        {loading && <div className='loader'><h2>Loading...</h2></div>}
+		{error && <span>{}</span>}
+        {data.length > 0 && 
+            <>
+            <div className='headerT headerMovies'>
+                <h1>Movies</h1>
+				<div className='filterInput'>                    
+					<span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
+				</div>       
+			</div>
+            <div className='gridMovies'>
+                <div className='gendersContainer'>
+                    
+                 {genres && genres.map((gender) => {
+                        return(
+                            <span style={{color:getRandomColor()}} key={gender.id} className='badgeGender'>{gender.name}</span>
+                        )
+                    })
+                        
+                    }
+                </div>
+                <div className='moviesSection'>
+                    <div className='headerT'>
+                        <button onClick={handlePrevPage}><IconLeft/></button>
+                        <button onClick={handleNextPage}><IconRight/></button>
+                    </div>
+                    <div className="headerB">
+                        <span>Page: </span><span className='badge badgeMovie'>{page}</span> 
+                    </div>
+                    <section className="moviesContainer">
+                        {data && data.map((movie) => {
+                            return (
+                                <div className='cardMovie'>
+                                <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster_path}`} alt={movie.title} key={movie.id} />
+                                <h2 className='movieTitle'>{movie.original_title}</h2>
+                                <span>{movie.release_date}</span>
+                                </div>
+                            )
+                        })}
+                    </section>
+                </div>
+            </div>
+            
+            
+            </>
+        }
+        
+        
     </>
   )
 }
