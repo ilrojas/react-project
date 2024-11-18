@@ -1,16 +1,18 @@
-import React from 'react';
+import { useState } from 'react';
 import { Link } from "react-router-dom"
 
 interface ItemNavProps{
     title:string;
     path:string;
-    reactIcon:React.ElementType 
+    reactIcon:React.ElementType ;
 }
 
 export const ItemNav: React.FC<ItemNavProps> = ({title,path,reactIcon:Icon}) => {
+
+  
   return (
     <>
-        <li>
+    <li >
 			<Link className='itemsLinks' to={path}>
 			<Icon/>
 			<span>{title}</span>

@@ -76,6 +76,26 @@ function App() {
 			
 		
 	}
+
+	// Seleccionar todos los <li>
+	const listItems = document.querySelectorAll('li');
+
+	// Recorrer los <li> y buscar los <Link> dentro de ellos
+	listItems.forEach((li) => {
+	const link = li.querySelector('a'); // Reemplaza 'a' por 'Link' si usas React
+	console.log(link)
+	if (link) {
+		link.addEventListener('click', () => {
+		// Quitar la clase 'active' de todos los <Link>
+		document.querySelectorAll('li a').forEach((el) => el.classList.remove('active'));
+
+		// Agregar la clase 'active' al <Link> clickeado
+		link.classList.add('active');
+		});
+	}
+	
+	});
+	
 	return (
 		<BrowserRouter>
 		<header>  

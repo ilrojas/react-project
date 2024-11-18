@@ -146,27 +146,38 @@ export const Weather = () => {
 	 const [error, setError] = useState<WeatherError>(null)
 	 const [loading, setLoading] = useState(true)
 	 const [newcity, setNewCity] = useState('london')
+
+	 const classTemp = data?.current.temp_c > 20 ? 'temp tempHot' : 'temp tempCold'
 	 
 	//const LoadData = (city = 'London') => {
 		useEffect(() => {  
+			if(!newcity) return
 			const abortController = new AbortController();
 			setLoading(true)
 			fetch(`http://api.weatherapi.com/v1/forecast.json?key=b59bc03c02784ce1837231527241511&q=${newcity}&days=7&aqi=no&alerts=no`, { signal: abortController.signal }) // Pasar la señal al fetch		
 			//fetch(`http://api.weatherapi.com/v1/forecast.json?days=7&aqi=no&alerts=no&key=b59bc03c02784ce1837231527241511&q=${newcity}`, { signal: abortController.signal })
-			.then((response) => response.json())
+			.then((response) => {
+				if (!response.ok) {
+				  throw new Error(`HTTP error! status: ${response.status}`);
+				  setError(`HTTP error! status: ${response.status}`)
+				}
+				return response.json();
+			  })
 			.then((data) => {
-				setData(data)
-			})
-			.catch((error) => {
-				
-				  setError(error);
-				
+				if (data.error) {
+				  throw new Error(data.error.message);
+				  setError(data.error.message) // Lanza el mensaje de error dentro de `data`
+				}
+				setData(data); // Guarda los datos si no hay errores
+			  })
+			.catch((error) => {				
+				  setError(error.message);				
 			  })
 			  .finally(() => setLoading(false));
 		  
 			//return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
-		  }, [newcity]);
-		  console.log(data)
+		  }, [newcity,error]);
+		  console.log({error,data})
 	//}
 	
 	 const changeCountry = (city:string) =>{
@@ -179,11 +190,22 @@ export const Weather = () => {
   return (
     <>
     	<h1>Weather</h1>
-		{data == null && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
+		{/* {data == null && error && <><h3 className="warnFetch"><PiWarningCircleDuotone />Upsss, we have a problem fetching the data. Refresh de page please.</h3><button onClick={() => setError(null)}>Retry</button></>} */}
+		{error &&  (
+			<>
+				<h3 className="warnFetch"><PiWarningCircleDuotone />{error}. Please try again.</h3>
+				<button onClick={() => {
+					setError(null)
+					setNewCity('london')
+					}}>Retry</button>
+			</>)
+		}
+		
 		{loading && <div className='loader'><h2>Loading...</h2></div>}
-		{error && <span>{error.error.message}</span>}
-		{data != null  && 
+		{/* {data != null  && data.error && <span>{data.error.error.message}</span>} */}
+		{data && 
 		<>
+			{/* {data.error && <span>{data.error.error.message}</span>} */}
 			<div className='headerT'>
 				<div className='filterInput'>
 					<WeatherInput changeCountry={changeCountry}/>
@@ -199,13 +221,10 @@ export const Weather = () => {
 			</div>
 			<div>
 				<div><span>{data?.current.condition.text}</span></div>
-				<div>{data?.current.temp_c}°</div>
+				<div className={classTemp}>{data?.current.temp_c}°</div>
 			</div>
 		</>
-		}
-		
-	
-	
+		}	
     </>
   )
 }
