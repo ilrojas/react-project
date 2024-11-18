@@ -206,23 +206,35 @@ export const Weather = () => {
 		{data && 
 		<>
 			{/* {data.error && <span>{data.error.error.message}</span>} */}
-			<div className='headerT'>
+			
+			<section className='headerT'>				
 				<div className='filterInput'>
-					<WeatherInput changeCountry={changeCountry}/>
+					<WeatherInput changeCountry={changeCountry}/>					
+				</div>
+				<div>
+				<a href="https://www.weatherapi.com/" title="Free Weather API"><img src='https://cdn.weatherapi.com/v4/images/weatherapi_logo.png' alt="Weather data by WeatherAPI.com" border="0"/></a>
 				</div>								        
-			</div>
+			</section>
+			<section>
+				
+				<div className="countryCurrentData">
+					<div className="countryInfo">
+						<div>{data?.location.name}</div>
+						<div>{data?.location.country}</div>
+						<div>{data?.location.localtime.split(' ')[1]}</div>
+					</div>
+					<div>
+						<div><img src={`http:${data?.current.condition.icon}`} width='128px' alt={`${data?.current.condition.text}`} /> </div>
+						<div><span>{data?.current.condition.text}</span></div>
+						<div className={classTemp}>{data?.current.temp_c}°</div>
+					</div>
+				</div>
+			</section>
 			
-			<div>{data?.location.name}</div>
-			<div>{data?.location.country}</div>
-			<div>{data?.location.localtime.split(' ')[1]}</div>
 			
-			<div>
-				<div><img src={`http:${data?.current.condition.icon}`} width='128px' alt={`${data?.current.condition.text}`} /> </div>
-			</div>
-			<div>
-				<div><span>{data?.current.condition.text}</span></div>
-				<div className={classTemp}>{data?.current.temp_c}°</div>
-			</div>
+			
+				
+			
 		</>
 		}	
     </>
