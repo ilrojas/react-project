@@ -1,4 +1,31 @@
+/*PREVENT HEADACHES*/
+*, *::before, *::after{
+  box-sizing: border-box;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  font:inherit;
+  /* background-color: #00ff590e; */
+  /* outline:solid 1px #007BFF; */
+}
+
+img, picture, svg, video, table{
+  display: block;
+  max-width: 100%;
+}
+
+html{
+  color-scheme: dark light;
+}
+
+
 body{
+  /*PREVENT HEADACHES*/
+min-width: 100dvh;
+/*PREVENT HEADACHES*/
+
   justify-content: center;
   overflow: inherit ;
   background-color: rgba(14, 22, 38, 1);
@@ -8,7 +35,7 @@ body{
  
  #root {
   /*max-width: 1280px;*/
-  width: 1400px;
+  width: 100%;
   margin: 30px 50px;
   padding: 2rem;
   text-align: center;
@@ -157,9 +184,7 @@ table{
   }
 }
 
-.content{
-  
-}
+
 
 .headerT, .nav {
   display: flex;
@@ -194,8 +219,7 @@ table{
 
 .headerMovies {
   background-color: #145e68d9;
-  position: absolute;
-  width: 100vmax;
+  /* position: absolute; */
   left: 0;
   z-index: 10;
   /* margin-bottom: 280px; */
@@ -216,6 +240,14 @@ table{
   font-size: x-large;
   font-weight: bold;
 }
+.movieYear,.badgeGenre{
+  font-weight: bold;
+  color: #d6d6d6;
+  padding: 1px;
+  border: .5px solid transparent;
+  background-color: #92002e8b;
+  border-radius: 5px;
+}
 
 .gendersContainer{
   grid-area: gendersContainer;
@@ -223,12 +255,13 @@ table{
   padding: 10px; /* Margen interno */
   position: relative;
   padding-bottom: 20px;
-  padding-top: 230px;
 
   
     display: grid;
     grid-template-columns: repeat(3,auto);
     grid-template-rows: repeat(10,30px);
+
+    align-items: start;
   
 }
 .gendersContainer span{
@@ -239,8 +272,22 @@ table{
   font-weight: bold;
 }
 
+.genderContainer{
+  display:flex;
+  font-size: 10px;
+  justify-content: end;
+  gap: 13px;
+  position: absolute;
+} 
+
+/* .badgeGenre{
+  border-radius: 4px;
+  background-color: #007BFF;
+  color: #ffffff;
+} */
+
 .gridMovies {
-  padding-top: 200px;
+  padding-top: 30px;
   position: relative;
   display: grid;
   grid-template-areas: 
@@ -283,6 +330,41 @@ table{
   }
 
 }
+.form_label{
+  font-size: 1.5em;
+  color: #78757554;
+  position: absolute;
+  top: 0;
+  left: 15px;
+  transform: translateY(10px);
+  transition: transform .5s ease, color .3s;
+}
+
+
+.inputForm{  
+  position:relative; /*para el placeholder*/
+  
+  margin-bottom:50px ;
+}
+.inputForm input {
+  border: none;
+  background-color: transparent;
+  border-bottom: 1px solid #484848 ;
+  width: 100%;
+  padding: .6em .3em;
+  outline: none;
+}
+.inputForm input:valid{
+  border-bottom: 3px solid rgba(0, 128, 0, 0.256);
+}
+
+
+
+.inputForm input:focus + .form_label,
+.inputForm input:not(:placeholder-shown) + .form_label{
+  transform: translateY(-30px) translateX(-15px) scale(.8);
+  color: #d1d1d1;
+}
 
 .filterInput{
   display: flex;
@@ -301,6 +383,8 @@ table{
   justify-content: center;
   font-weight: bold;
 }
+                                       
+ 
 
 
 
@@ -324,15 +408,21 @@ svg{
 
 .moviesContainer{
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  justify-items: center;
+  /* grid-template-columns: repeat(5, 20%);  */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /*hace que la cuadriculas de las peliculas sean responsivas*/
+  gap: 16px;
+
 }
 
 .cardMovie{
+  width: auto;
   transition: filter .2s ease-in-out;
-  padding-bottom: 25px;
+  padding-bottom: 45px;
   img{
     border-radius: 15px;
   }
+  position: relative;
 }
 
 .cardMovie:hover{

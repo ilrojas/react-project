@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { ListFunctions } from './components/ListFunctions'
 import { UserCard } from './components/UserCard'
@@ -104,7 +104,7 @@ function App() {
 			</div>      
 			<nav className='nav'>
 				<ul>
-					<ItemNav title="HOME" path='/' reactIcon={PiHouseSimpleThin}/>
+					<ItemNav title="HOME" path='/' classItem="itemsLinks active" reactIcon={PiHouseSimpleThin}/>
 					<ItemNav title="TABLE LIST" path='/table-list' reactIcon={PiListBulletsThin}/>
 					<ItemNav title="TODO APP" path='/todo-app' reactIcon={PiAppWindowThin}/>
 					<ItemNav title="USER CARD" path='/user-card' reactIcon={PiIdentificationBadgeThin}/>
@@ -113,11 +113,12 @@ function App() {
 				</ul>
 			</nav>  
 		</header>
-		<div className='content'>
+		<main className='content'>
 			
 			<div>
 				<Routes>         
-					<Route path='/' element={<Home/>}/>
+					<Route path='/' element={<Navigate to='/home'/>}/>
+					<Route path='/home' element={<Home/>}/>
 					<Route 
 						path='/table-list'
 						element={
@@ -159,7 +160,7 @@ function App() {
 		
 			
 			
-		</div>
+		</main>
 							
 		<footer>
 			<p className="read-the-docs">

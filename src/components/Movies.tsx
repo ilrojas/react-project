@@ -1,10 +1,9 @@
 
-import React from 'react';
-import { useState, useEffect } from "react"
+import React, { useRef, useState} from 'react';
 import type { Movie } from "../types"
-import type { Genres } from '../types';
 import {PiWarningCircleDuotone} from 'react-icons/pi' 
-
+import { useMovies } from '../hooks/useMovies';
+import { useGender } from '../hooks/useGender';
 
 /*
 Para obtener los generos
@@ -46,6 +45,9 @@ original: Resolución original de la imagen (puede ser muy pesada).
 Para obtener la configuracion de la api:
 https://api.themoviedb.org/3/configuration?api_key=TU_API_KEY
 */
+
+/*
+otra API : http://www.omdbapi.com/?apikey=[yourkey]& */
 interface MoviesProps{
     iconLeft:React.ElementType;
     iconRight:React.ElementType;
@@ -53,84 +55,38 @@ interface MoviesProps{
 
 export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRight}) => {
 
-    const API_KEY = '9efe3c8f9e067e6b0338cf9a0a4ab8f7'
-    const [page,setPage] = useState(1)
-    const URL = 'https://api.themoviedb.org/3'
+    
+    
     const POSTER_SIZE = 'w185'
     const URL_POSTER = 'https://image.tmdb.org/t/p'
-    
-    
-    const [genres, setGenres] = useState<Genres[]>([]);
-    const [data,setData] = useState<Movie[]>([])
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1);
+    /* const [genres, setGenres] = useState<Genres[]>([]); */
+    //const genres = useRef([])
+   // const [data,setData] = useState<Movie[]>([])
+    //const [error, setError] = useState(null)
+    //const [loading, setLoading] = useState(true)
     
     const handleNextPage = () => {
-        setPage(prevState => prevState+1)
+        setPage(prev=>prev+1)
     }
 
     const handlePrevPage = () => {
-        setPage(prevState => prevState-1)
+        setPage(prev=>prev-1)
     }
 
-    useEffect(() => {  
-        const abortController = new AbortController();
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // Realizamos ambas solicitudes en paralelo
-                const [moviesResponse] = await Promise.all([
-                    fetch(`${URL}/discover/movie?api_key=${API_KEY}&language=es-ES&sort_by=popularity.desc&page=${page}`, { signal: abortController.signal })
-                        .then((res) => res.json())
-                ]);
-    
-                // Actualizamos el estado con los resultados
-                setData(moviesResponse.results || []);
-            } catch (error) {
-                if (error.name !== 'AbortError') { // Ignorar errores causados por el aborto de la solicitud
-                    setError(error.message);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-    
-        fetchData();
-    
-        return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
-    }, [page]);
-    useEffect(() => {  
-        const abortController = new AbortController();
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // Realizamos ambas solicitudes en paralelo
-                const [genresResponse] = await Promise.all([                    
-                    fetch(`${URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`, { signal: abortController.signal })
-                        .then((res) => res.json())
-                ]);
-    
-                // Actualizamos el estado con los resultados
-                setGenres(genresResponse.genres || []);
-            } catch (error) {
-                if (error.name !== 'AbortError') { // Ignorar errores causados por el aborto de la solicitud
-                    setError(error.message);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-    
-        fetchData();
-    
-        return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
-    }, []);
-    //console.log(data)
-    //console.log(genres)
+    function handleSubmit(event){
+        event.preventDefault()
+        const data = Object.fromEntries(new window.FormData(event.target))
+        console.log(data)
+    }
 
-    function getRandomColor() {
+    /* function getRandomColor() {
         return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-      }
+      } */
+
+      const  {data,loading, error}= useMovies(page)
+      const {genRes} = useGender()
+      console.log(genRes)
   return (
     <>
         
@@ -143,14 +99,23 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                 <h1>Movies</h1>
 				<div className='filterInput'>                    
 					<span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
-				</div>       
+				</div>  
+                <form onSubmit={handleSubmit}>
+                    <input name='inputName' type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
+                    <button>Buscar</button>
+                </form>
+                {/* <div className='inputForm'>
+                    <input id="filter_by_name" name="filter_by_name"  type="text" onChange={()=>{}}   placeholder=" "></input>
+                    <label className="form_label" htmlFor="filter_by_name">Filter by name</label>
+                </div> */}    
 			</div>
             <div className='gridMovies'>
                 <div className='gendersContainer'>
                     
-                 {genres && genres.map((gender) => {
+                 {genRes && genRes.map((gender) => {
+                        
                         return(
-                            <span style={{color:getRandomColor()}} key={gender.id} className='badgeGender'>{gender.name}</span>
+                            <span  key={gender.id} className='badgeGender'>{gender.name}</span>
                         )
                     })
                         
@@ -158,7 +123,7 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                 </div>
                 <div className='moviesSection'>
                     <div className='headerT'>
-                        <button onClick={handlePrevPage}><IconLeft/></button>
+                        <button onClick={handlePrevPage} disabled={page === 1 ? true : false}><IconLeft/></button>
                         <button onClick={handleNextPage}><IconRight/></button>
                     </div>
                     <div className="headerB">
@@ -166,12 +131,29 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                     </div>
                     <section className="moviesContainer">
                         {data && data.map((movie) => {
-                            return (
+                            return (<>
                                 <div className='cardMovie' key={movie.id}>
-                                <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster_path}`} alt={movie.title} key={movie.id} />
-                                <h2 className='movieTitle'>{movie.original_title}</h2>
-                                <span>{movie.release_date}</span>
+                                    <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster}`} alt={movie.title} key={movie.id} />
+                                    <h2 className='movieTitle'>{movie.title}</h2>
+                                    <span className='movieYear'>{movie.release_date.split('-')[0]}</span>
+                                    {/* {genRes && genRes.length>0 && (
+                                        <div className='genderContainer'>
+                                            {
+                                                movie.genre_ids.map((idValue) => {
+                                                    // Buscar el género en genRes usando el idValue
+                                                    const genre = genRes.find((e) => e.id === idValue);
+                                                    // Si se encuentra el género, lo mostramos
+                                                    return genre ? (
+                                                        <span className='badgeGenre' key={genre.id} >{genre.name}</span>
+                                                    ) : null;
+                                                })
+                                                
+                                            }
+                                        </div>
+                                    )} */}
                                 </div>
+                                
+                                </>
                             )
                         })}
                     </section>
