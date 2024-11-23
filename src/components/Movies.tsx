@@ -4,6 +4,7 @@ import type { Movie } from "../types"
 import {PiWarningCircleDuotone} from 'react-icons/pi' 
 import { useMovies } from '../hooks/useMovies';
 import { useGender } from '../hooks/useGender';
+import { useSearch } from '../hooks/useSearch';
 
 /*
 Para obtener los generos
@@ -60,6 +61,10 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     const POSTER_SIZE = 'w185'
     const URL_POSTER = 'https://image.tmdb.org/t/p'
     const [page, setPage] = useState(1);
+
+    const  {data,loading, error}= useMovies(page)
+      const {genRes} = useGender()
+      const {errorSearch,setSearch,search} = useSearch()
     /* const [genres, setGenres] = useState<Genres[]>([]); */
     //const genres = useRef([])
    // const [data,setData] = useState<Movie[]>([])
@@ -77,39 +82,47 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     function handleSubmit(event){
         event.preventDefault()
         const data = Object.fromEntries(new window.FormData(event.target))
-        console.log(data)
+        setSearch(data.inputName)
+        /*console.log(data.inputName)*/
     }
 
     /* function getRandomColor() {
         return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
       } */
 
-      const  {data,loading, error}= useMovies(page)
-      const {genRes} = useGender()
-      console.log(genRes)
+      
   return (
     <>
         
         {data.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
-        {loading && <div className='loader'><h2>Loading...</h2></div>}
+        {/* {loading && <div className='loader'><h2>Loading...</h2></div>} */}
 		{error && <span>{}</span>}
         {data.length > 0 && 
             <>
+            
             <div className='headerT headerMovies'>
-                <h1>Movies</h1>
-				<div className='filterInput'>                    
-					<span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
-				</div>  
-                <form onSubmit={handleSubmit}>
-                    <input name='inputName' type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
-                    <button>Buscar</button>
+                
+				<div className='filterInput'>   
+                    <h1>Movies</h1>                 
+					{/* <span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input> */}
+                    <form onSubmit={handleSubmit}>
+                        <input name='inputName' type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
+                        <button>Buscar</button>
+                        {errorSearch && <h3 style={{color:'#92002e8b', fontWeight:'bold'}}>{errorSearch}</h3>}
                 </form>
+                
+				</div>  
+               
+
+                
+                
                 {/* <div className='inputForm'>
                     <input id="filter_by_name" name="filter_by_name"  type="text" onChange={()=>{}}   placeholder=" "></input>
                     <label className="form_label" htmlFor="filter_by_name">Filter by name</label>
                 </div> */}    
 			</div>
             <div className='gridMovies'>
+                {loading && <div className='loader'><h2>Loading...</h2></div>}
                 <div className='gendersContainer'>
                     
                  {genRes && genRes.map((gender) => {
@@ -129,13 +142,14 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                     <div className="headerB">
                         <span>Page: </span><span className='badge badgeMovie'>{page}</span> 
                     </div>
-                    <section className="moviesContainer">
+                    <ul className="moviesContainer">
                         {data && data.map((movie) => {
                             return (<>
-                                <div className='cardMovie' key={movie.id}>
-                                    <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster}`} alt={movie.title} key={movie.id} />
+                                <li className='cardMovie' key={movie.id}>
+                                    
                                     <h2 className='movieTitle'>{movie.title}</h2>
                                     <span className='movieYear'>{movie.release_date.split('-')[0]}</span>
+                                    <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster}`} alt={movie.title} key={movie.id} />
                                     {/* {genRes && genRes.length>0 && (
                                         <div className='genderContainer'>
                                             {
@@ -151,12 +165,12 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                                             }
                                         </div>
                                     )} */}
-                                </div>
+                                </li>
                                 
                                 </>
                             )
                         })}
-                    </section>
+                    </ul>
                 </div>
             </div>
             
