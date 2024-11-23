@@ -42,7 +42,6 @@ function App() {
 	  
 		return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
 	  }, []);
-	  //console.log({data,error,loading})
 
 	  
 	  
@@ -83,7 +82,7 @@ function App() {
 	// Recorrer los <li> y buscar los <Link> dentro de ellos
 	listItems.forEach((li) => {
 	const link = li.querySelector('a'); // Reemplaza 'a' por 'Link' si usas React
-	console.log(link)
+
 	if (link) {
 		link.addEventListener('click', () => {
 		// Quitar la clase 'active' de todos los <Link>

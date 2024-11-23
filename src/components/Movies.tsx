@@ -62,9 +62,12 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
     const URL_POSTER = 'https://image.tmdb.org/t/p'
     const [page, setPage] = useState(1);
 
-    const  {data,loading, error}= useMovies(page)
+    
       const {genRes} = useGender()
-      const {errorSearch,setSearch,search} = useSearch()
+      
+      const [dataSearch,setDataSearch] = useState<Movie[]>([])
+      const  {data,loading, error}= useMovies({page,dataSearch})
+      const {errorSearch,setSearch} = useSearch({data})
     /* const [genres, setGenres] = useState<Genres[]>([]); */
     //const genres = useRef([])
    // const [data,setData] = useState<Movie[]>([])
@@ -83,7 +86,8 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
         event.preventDefault()
         const data = Object.fromEntries(new window.FormData(event.target))
         setSearch(data.inputName)
-        /*console.log(data.inputName)*/
+        
+        
     }
 
     /* function getRandomColor() {
@@ -106,7 +110,7 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                     <h1>Movies</h1>                 
 					{/* <span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input> */}
                     <form onSubmit={handleSubmit}>
-                        <input name='inputName' type='text' onChange={()=>{}} placeholder="Filter by name..."></input>
+                        <input name='inputName' type='text'  placeholder="Filter by name..."></input>
                         <button>Buscar</button>
                         {errorSearch && <h3 style={{color:'#92002e8b', fontWeight:'bold'}}>{errorSearch}</h3>}
                 </form>

@@ -16,7 +16,7 @@ export const FormManage = () => {
     function handleInputChange (e){        
         const {name,value} = e.target;
         setFormData(prevState => ({...prevState,[name]:value}))
-        console.log({name,value})
+        
     }
 
     function handleSubmit(event){

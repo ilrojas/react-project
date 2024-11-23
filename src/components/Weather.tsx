@@ -139,7 +139,6 @@ air_quality	element	See aqi element*/
 export const Weather = () => {
     const API_KEY = import.meta.env.VITE_API_KEY_WEATHER
     const URL = import.meta.env.VITE_API_URL_WEATHER
-	//console.log({API_KEY,URL})
     
 
     const [data,setData] = useState<WeatherResults>(null)
@@ -177,7 +176,6 @@ export const Weather = () => {
 		  
 			//return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
 		  }, [newcity,error]);
-		  console.log({error,data})
 	//}
 	
 	 const changeCountry = (city:string) =>{

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { Movie } from "../types"
 
-export function useMovies (page) {
+export function useMovies ({page}) {
     
     const [data,setData] = useState<Movie[]>([])
     const [error, setError] = useState(null)
@@ -10,7 +10,7 @@ export function useMovies (page) {
     const API_KEY = '9efe3c8f9e067e6b0338cf9a0a4ab8f7'
     
     const URL = 'https://api.themoviedb.org/3'
-
+    
     useEffect(() => {  
         const abortController = new AbortController();
         
@@ -23,7 +23,6 @@ export function useMovies (page) {
         .finally(()=>{setLoading(false)})       
         return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
     }, [page]);
-    console.log(data)
     const moviesMapped = data.map(movie =>(
         {
             id:movie.id,
