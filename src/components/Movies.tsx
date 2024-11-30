@@ -1,10 +1,9 @@
-
-import React, { useRef, useState} from 'react';
-import type { Movie } from "../types"
-import {PiWarningCircleDuotone} from 'react-icons/pi' 
-import { useMovies } from '../hooks/useMovies';
-import { useGender } from '../hooks/useGender';
-import { useSearch } from '../hooks/useSearch';
+import React, { useRef, useState } from "react";
+import type { Movie } from "../types";
+import { PiWarningCircleDuotone } from "react-icons/pi";
+import { useMovies } from "../hooks/useMovies";
+import { useGender } from "../hooks/useGender";
+import { useSearch } from "../hooks/useSearch";
 
 /*
 Para obtener los generos
@@ -49,112 +48,139 @@ https://api.themoviedb.org/3/configuration?api_key=TU_API_KEY
 
 /*
 otra API : http://www.omdbapi.com/?apikey=[yourkey]& */
-interface MoviesProps{
-    iconLeft:React.ElementType;
-    iconRight:React.ElementType;
+interface MoviesProps {
+  iconLeft: React.ElementType;
+  iconRight: React.ElementType;
 }
 
-export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRight}) => {
+export const Movies: React.FC<MoviesProps> = ({
+  iconLeft: IconLeft,
+  iconRight: IconRight,
+}) => {
+  const POSTER_SIZE = "w185";
+  const URL_POSTER = "https://image.tmdb.org/t/p";
+  const [page, setPage] = useState(1);
 
-    
-    
-    const POSTER_SIZE = 'w185'
-    const URL_POSTER = 'https://image.tmdb.org/t/p'
-    const [page, setPage] = useState(1);
+  const { genRes } = useGender();
 
-    
-      const {genRes} = useGender()
-      
-      const [dataSearch,setDataSearch] = useState<Movie[]>([])
-      const  {data,loading, error}= useMovies({page,dataSearch})
-      const {errorSearch,setSearch} = useSearch({data})
-    /* const [genres, setGenres] = useState<Genres[]>([]); */
-    //const genres = useRef([])
-   // const [data,setData] = useState<Movie[]>([])
-    //const [error, setError] = useState(null)
-    //const [loading, setLoading] = useState(true)
-    
-    const handleNextPage = () => {
-        setPage(prev=>prev+1)
-    }
+  const [dataSearch, setDataSearch] = useState<Movie[]>([]);
+  const { data, loading, error } = useMovies({ page, dataSearch });
+  const { errorSearch, setSearch } = useSearch({ data });
+  /* const [genres, setGenres] = useState<Genres[]>([]); */
+  //const genres = useRef([])
+  // const [data,setData] = useState<Movie[]>([])
+  //const [error, setError] = useState(null)
+  //const [loading, setLoading] = useState(true)
 
-    const handlePrevPage = () => {
-        setPage(prev=>prev-1)
-    }
+  const handleNextPage = () => {
+    setPage((prev) => prev + 1);
+  };
 
-    function handleSubmit(event){
-        event.preventDefault()
-        const data = Object.fromEntries(new window.FormData(event.target))
-        setSearch(data.inputName)
-        
-        
-    }
+  const handlePrevPage = () => {
+    setPage((prev) => prev - 1);
+  };
 
-    /* function getRandomColor() {
+  function handleSubmit(event) {
+    event.preventDefault();
+    const data = Object.fromEntries(new window.FormData(event.target));
+    setSearch(data.inputName);
+  }
+
+  /* function getRandomColor() {
         return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
       } */
 
-      
   return (
     <>
-        
-        {data.length == 0 && <h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3>}
-        {/* {loading && <div className='loader'><h2>Loading...</h2></div>} */}
-		{error && <span>{}</span>}
-        {data.length > 0 && 
-            <>
-            
-            <div className='headerT headerMovies'>
-                
-				<div className='filterInput'>   
-                    <h1>Movies</h1>                 
-					{/* <span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input> */}
-                    <form onSubmit={handleSubmit}>
-                        <input name='inputName' type='text'  placeholder="Filter by name..."></input>
-                        <button>Buscar</button>
-                        {errorSearch && <h3 style={{color:'#92002e8b', fontWeight:'bold'}}>{errorSearch}</h3>}
-                </form>
-                
-				</div>  
-               
+      {data.length == 0 && (
+        <h3 className="warnFetch">
+          <PiWarningCircleDuotone /> Upsss, we have a problem fetching the data.
+          Refresh de page please.
+        </h3>
+      )}
+      {/* {loading && <div className='loader'><h2>Loading...</h2></div>} */}
+      {error && <span>{}</span>}
+      {data.length > 0 && (
+        <>
+          <div className="headerT headerMovies">
+            <div className="filterInput">
+              <h1>Movies</h1>
+              {/* <span>Filter </span><input type='text' onChange={()=>{}} placeholder="Filter by name..."></input> */}
+              <form onSubmit={handleSubmit}>
+                <input
+                  name="inputName"
+                  type="text"
+                  placeholder="Filter by name..."
+                ></input>
+                <button>Buscar</button>
+                {errorSearch && (
+                  <h3 style={{ color: "#92002e8b", fontWeight: "bold" }}>
+                    {errorSearch}
+                  </h3>
+                )}
+              </form>
+            </div>
 
-                
-                
-                {/* <div className='inputForm'>
+            {/* <div className='inputForm'>
                     <input id="filter_by_name" name="filter_by_name"  type="text" onChange={()=>{}}   placeholder=" "></input>
                     <label className="form_label" htmlFor="filter_by_name">Filter by name</label>
-                </div> */}    
-			</div>
-            <div className='gridMovies'>
-                {loading && <div className='loader'><h2>Loading...</h2></div>}
-                <div className='gendersContainer'>
-                    
-                 {genRes && genRes.map((gender) => {
-                        
-                        return(
-                            <span  key={gender.id} className='badgeGender'>{gender.name}</span>
-                        )
-                    })
-                        
-                    }
-                </div>
-                <div className='moviesSection'>
-                    <div className='headerT'>
-                        <button onClick={handlePrevPage} disabled={page === 1 ? true : false}><IconLeft/></button>
-                        <button onClick={handleNextPage}><IconRight/></button>
-                    </div>
-                    <div className="headerB">
-                        <span>Page: </span><span className='badge badgeMovie'>{page}</span> 
-                    </div>
-                    <ul className="moviesContainer">
-                        {data && data.map((movie) => {
-                            return (<>
-                                <li className='cardMovie' key={movie.id}>
-                                    
-                                    <h2 className='movieTitle'>{movie.title}</h2>
-                                    <span className='movieYear'>{movie.release_date.split('-')[0]}</span>
-                                    <img src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster}`} alt={movie.title} key={movie.id} />
-                                    {/* {genRes && genRes.length>0 && (
+                </div> */}
+          </div>
+          <div className="gridMovies">
+            {/* {loading && <div className='loader'><h2>Loading...</h2></div>} */}
+            {loading && (
+              <div className="loader">
+                <section>
+                  <span className="item"></span>
+                  <span className="item"></span>
+                  <span className="item"></span>
+                  <span className="item"></span>
+                  <span className="item"></span>
+                </section>
+              </div>
+            )}
+            <div className="gendersContainer">
+              {genRes &&
+                genRes.map((gender) => {
+                  return (
+                    <span key={gender.id} className="badgeGender">
+                      {gender.name}
+                    </span>
+                  );
+                })}
+            </div>
+            <div className="moviesSection">
+              <div className="headerT">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={page === 1 ? true : false}
+                >
+                  <IconLeft />
+                </button>
+                <button onClick={handleNextPage}>
+                  <IconRight />
+                </button>
+              </div>
+              <div className="headerB">
+                <span>Page: </span>
+                <span className="badge badgeMovie">{page}</span>
+              </div>
+              <ul className="moviesContainer">
+                {data &&
+                  data.map((movie) => {
+                    return (
+                      <>
+                        <li className="cardMovie" key={movie.id}>
+                          <h2 className="movieTitle">{movie.title}</h2>
+                          <span className="movieYear">
+                            {movie.release_date.split("-")[0]}
+                          </span>
+                          <img
+                            src={`${URL_POSTER}/${POSTER_SIZE}/${movie.poster}`}
+                            alt={movie.title}
+                            key={movie.id}
+                          />
+                          {/* {genRes && genRes.length>0 && (
                                         <div className='genderContainer'>
                                             {
                                                 movie.genre_ids.map((idValue) => {
@@ -169,20 +195,15 @@ export const Movies:React.FC<MoviesProps> = ({iconLeft:IconLeft,iconRight:IconRi
                                             }
                                         </div>
                                     )} */}
-                                </li>
-                                
-                                </>
-                            )
-                        })}
-                    </ul>
-                </div>
+                        </li>
+                      </>
+                    );
+                  })}
+              </ul>
             </div>
-            
-            
-            </>
-        }
-        
-        
+          </div>
+        </>
+      )}
     </>
-  )
-}
+  );
+};

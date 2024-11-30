@@ -1,13 +1,124 @@
-import type { User } from "../types"
+import {useState, useEffect, useRef } from 'react'
 
-interface Props{
-    users:User[]
-    deletedUsers:(index:string)=>void
-}
-export const ListFunctions = ({deletedUsers,users}:Props) => { 
+import type { User } from "../types"
+import '../App.css'
+
+import {  PiWarningCircleDuotone, PiSortDescendingLight } from 'react-icons/pi'
+import { MdOutlineDeleteSweep } from "react-icons/md";
+
+
+
+
+
+
+export const ListFunctions = () => { 
+
+const [orderedByCountry, setOrderedByCountry] = useState(false)
+const [data,setData] = useState<User[]>([])
+	 const [error, setError] = useState(null)
+	 const [loading, setLoading] = useState(true)
+	 const original = useRef<User[]>([])
+
+	 useEffect(() => {  
+		const abortController = new AbortController();
+		setLoading(true) 	  
+		fetch('https://randomuser.me/api?results=50', { signal: abortController.signal }) // Pasar la señal al fetch		
+		.then((response) => response.json())
+		.then((data) => {
+			if(data.results.length<=0){
+				throw new Error(`Can not find data. Please try again.`)
+				setError(`Can not find data. Please try again.`)
+			}
+			setData(data.results)
+			original.current= data.results
+		})
+		.catch((error) => {
+			if (error.name !== 'AbortError') { // Ignorar el error si es causado por el abort
+			  setError(error);
+			}
+		  })
+		  .finally(() => setLoading(false));
+	  
+		return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
+	  }, []);
+
+	
+	const sortByCountry=()=>{
+		setOrderedByCountry(prevState=> !prevState)
+	}
+	
+	const sortedUsers = orderedByCountry
+	?[...data].sort((a,b)=>{
+		return a.location.country.localeCompare(b.location.country)
+	})
+	: data 
+
+	const deletedUsers = (index:string)=>{
+		const filters = data.filter((user)=>user.login.uuid !== index)
+		setData(filters)
+	}
+
+	const inputFilter = (e) => {
+		const valueInput =e.target.value.toLowerCase();
+		if(valueInput){			
+			const dataFilter = original.current.filter((user)=>{return user.name.first.toLowerCase().includes(valueInput) || user.name.last.toLowerCase().includes(valueInput)})
+			setData(dataFilter)	
+			
+			console.log(dataFilter)	
+			console.log(original.current)		
+		}
+		else{
+			setData(original.current)
+		}
+			
+		
+	}
   return (
-        
     <>
+								<h1>List of users</h1>
+								{/* {loading && <div className='loader'><h2>Loading...</h2></div>} */}
+							
+										{/* {!loading && <ListFunctions deletedUsers={deletedUsers} users={sortedUsers}/>} */}
+								{/* {sortedUsers.length == 0 && <><h3 className="warnFetch"><PiWarningCircleDuotone /> Upsss, we have a problem fetching the data. Refresh de page please.</h3><button onClick={() => {
+													setError(null)
+													inputFilter('')
+												}}>Retry</button></>} */}
+								
+									<>
+										<div className='headerT'>
+											<div className='filterInput'>
+												<span>Filter </span><input type='text' onChange={inputFilter} placeholder="Filter by name..."></input>
+											</div>										
+
+											<div>																
+												<button onClick={sortByCountry}>{orderedByCountry?<MdOutlineDeleteSweep />:<PiSortDescendingLight />}</button>
+												<button onClick={()=>{}}>Restore Deleted Users</button>        
+											</div>        
+										</div>
+										<div className="headerB">
+											<span>Total users: </span><span className='badge'>{sortedUsers.length}</span> 
+										</div>
+										
+										<div className="tableContent">
+        {loading && 
+                <div className='loader'>
+					<section>
+						<span className="item"></span>
+						<span className="item"></span>
+						<span className="item"></span>
+						<span className="item"></span>
+						<span className="item"></span>
+					</section>
+				</div>
+        }
+
+        {sortedUsers.length == 0 && 
+            <>
+                <h3 className="warnFetch"><PiWarningCircleDuotone />   
+                    Upsss, we have a problem fetching the data. Refresh de page please.
+                </h3>   
+            </>
+         }
         <table>
             <thead>
                 <tr>
@@ -21,10 +132,11 @@ export const ListFunctions = ({deletedUsers,users}:Props) => {
                 </tr>
             </thead>
             <tbody>
+            
                 
-                {
                     
-                        users.map((user,index)=>{
+                    {sortedUsers.length>0 && 
+                        sortedUsers.map((user,index)=>{
                             return (
                                 <tr key={user.login.uuid}>
                                     <td>{index+1}</td>
@@ -45,11 +157,18 @@ export const ListFunctions = ({deletedUsers,users}:Props) => {
                                 </tr>
                             )
                         })
+                    }
+                        
                     
                     
-                }
+                
             </tbody>
         </table>
-    </>
+    </div>
+									</>
+								
+								
+							</>	
+    
   )
 }

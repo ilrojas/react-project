@@ -1,8 +1,7 @@
-
-import { useState, useEffect } from "react"
-import { WeatherInput } from "./WeatherInput"
-import type { WeatherResults, WeatherError } from "../types" 
-import {PiWarningCircleDuotone} from 'react-icons/pi' 
+import { useState, useEffect } from "react";
+import { WeatherInput } from "./WeatherInput";
+import type { WeatherResults, WeatherError } from "../types";
+import { PiWarningCircleDuotone } from "react-icons/pi";
 
 /*Forecast API
 Forecast weather API method returns, depending upon your price plan level, upto next 14 day weather forecast and weather alert as json or xml. The data is returned as a Forecast Object.
@@ -137,104 +136,131 @@ diff_rad	decimal	Diffuse Horizontal Irradiation (DHI) W/m²
 air_quality	element	See aqi element*/
 
 export const Weather = () => {
-    const API_KEY = import.meta.env.VITE_API_KEY_WEATHER
-    const URL = import.meta.env.VITE_API_URL_WEATHER
-    
+  const API_KEY = import.meta.env.VITE_API_KEY_WEATHER;
+  const URL = import.meta.env.VITE_API_URL_WEATHER;
 
-    const [data,setData] = useState<WeatherResults>(null)
-	 const [error, setError] = useState<WeatherError>(null)
-	 const [loading, setLoading] = useState(true)
-	 const [newcity, setNewCity] = useState('london')
+  const [data, setData] = useState<WeatherResults>(null);
+  const [error, setError] = useState<WeatherError>(null);
+  const [loading, setLoading] = useState(true);
+  const [newcity, setNewCity] = useState("london");
 
-	 const classTemp = data?.current.temp_c > 20 ? 'temp tempHot' : 'temp tempCold'
-	 
-	//const LoadData = (city = 'London') => {
-		useEffect(() => {  
-			if(!newcity) return
-			const abortController = new AbortController();
-			setLoading(true)
-			fetch(`http://api.weatherapi.com/v1/forecast.json?key=b59bc03c02784ce1837231527241511&q=${newcity}&days=7&aqi=no&alerts=no`, { signal: abortController.signal }) // Pasar la señal al fetch		
-			//fetch(`http://api.weatherapi.com/v1/forecast.json?days=7&aqi=no&alerts=no&key=b59bc03c02784ce1837231527241511&q=${newcity}`, { signal: abortController.signal })
-			.then((response) => {
-				if (!response.ok) {
-				  throw new Error(`HTTP error! status: ${response.status}`);
-				  setError(`HTTP error! status: ${response.status}`)
-				}
-				return response.json();
-			  })
-			.then((data) => {
-				if (data.error) {
-				  throw new Error(data.error.message);
-				  setError(data.error.message) // Lanza el mensaje de error dentro de `data`
-				}
-				setData(data); // Guarda los datos si no hay errores
-			  })
-			.catch((error) => {				
-				  setError(error.message);				
-			  })
-			  .finally(() => setLoading(false));
-		  
-			//return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
-		  }, [newcity,error]);
-	//}
-	
-	 const changeCountry = (city:string) =>{
-		setData(null)
-		setNewCity(city)
-		//LoadData(city)
-	}
-     
-    
+  const classTemp =
+    data?.current.temp_c > 20 ? "temp tempHot" : "temp tempCold";
+
+  //const LoadData = (city = 'London') => {
+  useEffect(() => {
+    if (!newcity) return;
+    const abortController = new AbortController();
+    setLoading(true);
+    fetch(
+      `http://api.weatherapi.com/v1/forecast.json?key=b59bc03c02784ce1837231527241511&q=${newcity}&days=7&aqi=no&alerts=no`,
+      { signal: abortController.signal }
+    ) // Pasar la señal al fetch
+      //fetch(`http://api.weatherapi.com/v1/forecast.json?days=7&aqi=no&alerts=no&key=b59bc03c02784ce1837231527241511&q=${newcity}`, { signal: abortController.signal })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+          setError(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.error) {
+          throw new Error(data.error.message);
+          setError(data.error.message); // Lanza el mensaje de error dentro de `data`
+        }
+        setData(data); // Guarda los datos si no hay errores
+      })
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => setLoading(false));
+
+    //return () => abortController.abort(); // Abortar la solicitud si el componente se desmonta
+  }, [newcity, error]);
+  //}
+
+  const changeCountry = (city: string) => {
+    setData(null);
+    setNewCity(city);
+    //LoadData(city)
+  };
+
   return (
     <>
-    	<h1>Weather</h1>
-		{/* {data == null && error && <><h3 className="warnFetch"><PiWarningCircleDuotone />Upsss, we have a problem fetching the data. Refresh de page please.</h3><button onClick={() => setError(null)}>Retry</button></>} */}
-		{error &&  (
-			<>
-				<h3 className="warnFetch"><PiWarningCircleDuotone />{error}. Please try again.</h3>
-				<button onClick={() => {
-					setError(null)
-					setNewCity('london')
-					}}>Retry</button>
-			</>)
-		}
-		
-		{loading && <div className='loader'><h2>Loading...</h2></div>}
-		{/* {data != null  && data.error && <span>{data.error.error.message}</span>} */}
-		{data && 
-		<>
-			{/* {data.error && <span>{data.error.error.message}</span>} */}
-			
-			<section className='headerT'>				
-				<div className='filterInput'>
-					<WeatherInput changeCountry={changeCountry}/>					
-				</div>
-				<div>
-				<a href="https://www.weatherapi.com/" title="Free Weather API"><img src='https://cdn.weatherapi.com/v4/images/weatherapi_logo.png' alt="Weather data by WeatherAPI.com" border="0"/></a>
-				</div>								        
-			</section>
-			<section>
-				
-				<div className="countryCurrentData">
-					<div className="countryInfo">
-						<div>{data?.location.name}</div>
-						<div>{data?.location.country}</div>
-						<div>{data?.location.localtime.split(' ')[1]}</div>
-					</div>
-					<div>
-						<div><img src={`http:${data?.current.condition.icon}`} width='128px' alt={`${data?.current.condition.text}`} /> </div>
-						<div><span>{data?.current.condition.text}</span></div>
-						<div className={classTemp}>{data?.current.temp_c}°</div>
-					</div>
-				</div>
-			</section>
-			
-			
-			
-				
-			
-		</>
-		}	
+      <h1>Weather</h1>
+      {/* {data == null && error && <><h3 className="warnFetch"><PiWarningCircleDuotone />Upsss, we have a problem fetching the data. Refresh de page please.</h3><button onClick={() => setError(null)}>Retry</button></>} */}
+      {error && (
+        <>
+          <h3 className="warnFetch">
+            <PiWarningCircleDuotone />
+            {error}. Please try again.
+          </h3>
+          <button
+            onClick={() => {
+              setError(null);
+              setNewCity("london");
+            }}
+          >
+            Retry
+          </button>
+        </>
+      )}
+
+      {loading && (
+        <div className="loader">
+          <section>
+            <span className="item"></span>
+            <span className="item"></span>
+            <span className="item"></span>
+            <span className="item"></span>
+            <span className="item"></span>
+          </section>
+        </div>
+      )}
+      {/* {data != null  && data.error && <span>{data.error.error.message}</span>} */}
+      {data && (
+        <>
+          {/* {data.error && <span>{data.error.error.message}</span>} */}
+
+          <section className="headerT">
+            <div className="filterInput">
+              <WeatherInput changeCountry={changeCountry} />
+            </div>
+            <div>
+              <a href="https://www.weatherapi.com/" title="Free Weather API">
+                <img
+                  src="https://cdn.weatherapi.com/v4/images/weatherapi_logo.png"
+                  alt="Weather data by WeatherAPI.com"
+                  border="0"
+                />
+              </a>
+            </div>
+          </section>
+          <section>
+            <div className="countryCurrentData">
+              <div className="countryInfo">
+                <div>{data?.location.name}</div>
+                <div>{data?.location.country}</div>
+                <div>{data?.location.localtime.split(" ")[1]}</div>
+              </div>
+              <div>
+                <div>
+                  <img
+                    src={`http:${data?.current.condition.icon}`}
+                    width="128px"
+                    alt={`${data?.current.condition.text}`}
+                  />{" "}
+                </div>
+                <div>
+                  <span>{data?.current.condition.text}</span>
+                </div>
+                <div className={classTemp}>{data?.current.temp_c}°</div>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </>
-  )
-}
+  );
+};
