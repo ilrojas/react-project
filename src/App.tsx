@@ -6,6 +6,7 @@ import { Home } from "./components/Home";
 import { TodoApp } from "./components/TodoApp";
 import { Weather } from "./components/Weather";
 import { Movies } from "./components/Movies";
+import { Search } from "./components/Search";
 import {
   PiFilmReelDuotone,
   PiCloudMoon,
@@ -23,6 +24,20 @@ import { ItemNav } from "./components/ItemNav";
 function App() {
   // Seleccionar todos los <li>
   const listItems = document.querySelectorAll("li");
+
+  const body = document.body
+  const toggleTheme = document.getElementById('changeTheme')
+
+  toggleTheme?.addEventListener('click', ()=>{
+    body.classList.remove("light-mode")
+    body.classList.add("dark-mode")
+    
+  })
+  /* body.classList.toggle('dark-mode', localStorage.getItem('mode')=== 'dark')
+  toggleTheme?.addEventListener('click', ()=>{
+    const isDark = body.classList.toggle('dark-mode')
+    localStorage.setItem('mode',isDark ? 'dark' : 'light')
+  }) */
 
   // Recorrer los <li> y buscar los <Link> dentro de ellos
   listItems.forEach((li) => {
@@ -46,6 +61,10 @@ function App() {
       <header>
         <div className="iconMe">
           <PiUserCheckDuotone />
+          <div className="switcherThemeContainer">
+            <input id="changeTheme" type="checkbox" />
+            <label className="labelSwitch" htmlFor="changeTheme"></label>
+          </div>
         </div>
         <nav className="nav">
           <ul>
@@ -77,7 +96,9 @@ function App() {
               reactIcon={PiFilmReelDuotone}
             />
           </ul>
+          
         </nav>
+
       </header>
       <main className="content">
         <div>
@@ -86,7 +107,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/table-list" element={<ListFunctions />} />
             <Route path="/todo-app" element={<TodoApp />} />
-            <Route path="/user-card" element={<UserCard />} />
+            <Route path="/user-card" element={<Search />} />
             <Route path="/weather" element={<Weather />} />
             <Route
               path="/movies"
