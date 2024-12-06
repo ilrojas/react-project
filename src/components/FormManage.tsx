@@ -38,7 +38,7 @@ export const FormManage = () => {
             type="text"
             value={formData.firstName}
             onChange={handleInputChange}
-            placeholder=" "
+            placeholder=" " 
           ></input>
           <label className="form_label" htmlFor="firstName">
             First Name

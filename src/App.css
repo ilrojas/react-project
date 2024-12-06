@@ -68,7 +68,7 @@ img, picture, svg, video, table{
   max-width: 100%;
 }
 
-html{
+:root{
   color-scheme: light dark;
 }
 
@@ -499,9 +499,49 @@ table{
 
 
 
-svg{
+.itemsLinks svg{
   height: 24px;
   width: 24px;
+} 
+
+.iconFooterHTML{
+  filter: drop-shadow(0 0 15px rgba(247, 145, 29, 0.655));
+}
+.iconFooterTS{
+  filter: drop-shadow(0 0 15px rgba(57, 100, 168, 0.655));
+}
+.iconFooterTS, .iconFooterHTML{
+  height: 72px;
+  width: 72px;
+  animation-name: scaleIcon;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate-reverse;
+}
+.iconFooterReact{
+  height: 72px;
+  width: 72px;
+  animation-name: rotateIcon;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  filter: drop-shadow(0 0 15px rgba(26, 123, 161, 0.655));
+}
+@keyframes rotateIcon {
+  100%{
+    transform: rotate(360deg);
+  }
+  
+}
+@keyframes scaleIcon {
+  0%{
+    transform: scale(.9);
+  }
+  100%{
+    transform: scale(1);
+  }
+  
 }
 
 .warnFetch{

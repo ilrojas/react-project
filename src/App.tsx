@@ -7,6 +7,9 @@ import { TodoApp } from "./components/TodoApp";
 import { Weather } from "./components/Weather";
 import { Movies } from "./components/Movies";
 import { Search } from "./components/Search";
+import { Reactjs } from "./components/Reactjs";
+import { TypeScript } from "./components/TypeScript";
+import { HTML5 } from "./components/HTML5";
 import {
   PiFilmReelDuotone,
   PiCloudMoon,
@@ -124,6 +127,12 @@ function App() {
 
       <footer>
         <p className="read-the-docs">All content is only of learning purpose</p>
+        <section className="iconsFooter">
+        <div className="iconFooterReact"><Reactjs /></div>
+        <div className="iconFooterTS"><TypeScript /></div> 
+        <div className="iconFooterHTML"><HTML5 /></div> 
+        </section>
+        
       </footer>
     </BrowserRouter>
   );
